@@ -7,6 +7,8 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+# animações de escrita
+
 def animacao(mensagem, stop_event):
     dots = ["", ".", "..", "..."]
     i = 0
@@ -35,15 +37,18 @@ file = "assets/output.wav"
 if not os.path.exists(file):
     raise FileNotFoundError(f"Arquivo '{file}' não encontrado.")
 
+# carrega o modelo whisper
 stop_event, thread_anim = start_thread("Carregando modelo Whisper")
 model = whisper.load_model("medium")
 stop_thread(stop_event, thread_anim)
-
 print("\nModelo carregado.")
 
+# faz a transcrição do áudio
 stop_event, thread_anim = start_thread("Transcrevendo áudio")
 result = model.transcribe(file, language="pt")
 stop_thread(stop_event, thread_anim)
 
+transcription = result["text"]
+
 print("\nTRANSCRIÇÃO:")
-print(result["text"])
+print(transcription)
