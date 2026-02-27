@@ -2,8 +2,6 @@ import pyaudio
 import wave
 import time
 import sys
-import os
-
 
 # configurações
 FORMAT = pyaudio.paInt16 # 16 bits, padrão WAV
