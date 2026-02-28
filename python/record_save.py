@@ -17,6 +17,35 @@ audio = pyaudio.PyAudio()
 
 print("\033c") # os.system("clear")
 
+def selecionar_idioma():
+    # idiomas = {
+    #     "1": ("pt", "Português"),
+    #     "2": ("en", "Inglês"),
+    #     "3": ("fr", "Francês"),
+    #     "4": ("es", "Espanhol"),
+    #     "5": ("de", "Alemão")
+    # }
+
+    idiomas = {
+        "1": ("pt", "Português", "portuguese"),
+        "2": ("en", "Inglês", "english"),
+        "3": ("fr", "Francês", "french"),
+        "4": ("es", "Espanhol", "spanish"),
+        "5": ("de", "Alemão", "german")
+    }
+
+    print("Selecione o idioma para realizar a tradução:\n")
+    for k, (_, nome,_) in idiomas.items():
+        print(f"{k} - {nome}")
+
+    while True:
+        escolha = input("\nOpção: ").strip()
+        if escolha in idiomas:
+            return idiomas[escolha]
+        print("Opção inválida, tente novamente.")
+
+language=selecionar_idioma()
+
 # habilita a captura de áudio
 stream = audio.open(format=FORMAT,
                     channels=CHANNELS,
@@ -33,7 +62,7 @@ while time.time() - start_time < 5:
         sys.stdout.flush()
         time.sleep(0.4)
 
-print("")
+print(f"\nInforme uma frase para ser traduzida para {language[1].lower()}:")
 
 frames = []
 for a in range(int(RATE / BUFFER * RECORD_SECONDS)):
@@ -42,7 +71,7 @@ for a in range(int(RATE / BUFFER * RECORD_SECONDS)):
     minutos = int(tempo // 60)
     segundos = int(tempo % 60)
 
-    sys.stdout.write(f"\rGravando [{minutos:02d}:{segundos:02d}]   ")
+    sys.stdout.write(f"\r   Gravando [{minutos:02d}:{segundos:02d}]   ")
     sys.stdout.flush()
 
     # lê o bloco de áudio
@@ -62,4 +91,4 @@ with wave.open("assets/" + OUTPUT_FILE, 'wb') as wf:
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
 
-print("Arquivo salvo como", OUTPUT_FILE)
+# print("Arquivo salvo como", OUTPUT_FILE)

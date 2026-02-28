@@ -1,15 +1,16 @@
-from openai import OpenAI
 import record_save
-from transcript import transcription
-
-# ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJjJ47KNSwhHNeA+pqt6J9thA4hNvxRxr+PdogH9OVEE
-
+import transcript
 import subprocess
+import tts
+
+lang, _, language = record_save.language
+
+transcription = transcript.transcription
 
 def perguntar_llama(prompt):
     processo = subprocess.run(
         ["ollama", "run", "llama3"],
-        input=prompt,
+        input=  f"Return ONLY the translation for the phrase from portuguese to {language}, don't add any other message besides the translation:" + prompt,
         capture_output=True,
         text=True
     )
@@ -17,5 +18,13 @@ def perguntar_llama(prompt):
 
 resposta = perguntar_llama(transcription)
 
-print("\nRESPOSTA DO MODELO:\n")
-print(resposta)
+print("\nTradução:")
+print(" "+resposta, end="")
+
+# reproduzir text to speech (tts)
+stop_event, thread_anim = transcript.start_thread("Reproduzindo")
+tts.texttospeech(resposta,lang)
+transcript.stop_thread(stop_event, thread_anim)
+print("\rReproduzindo...")
+
+print("Encerrando programa...")
